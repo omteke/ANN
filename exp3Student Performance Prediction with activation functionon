@@ -1,0 +1,72 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Defining activation functions
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def relu(x):
+    return np.maximum(0, x)
+
+def tanh(x):
+    return np.tanh(x)
+
+# Creating dataset
+
+study_hrs = np.linspace(1, 10, 100)
+print(f" study hours : {study_hrs}")
+study_hrs = (study_hrs - np.mean(study_hrs)) / np.std(study_hrs)
+print(f"Study Hours:{study_hrs}")
+
+score = 5 * study_hrs + np.random.normal(0, 2, 100)
+print(f"Score: {score }")
+
+# Initializing parameters
+
+w = np.random.randn()
+b = np.random.randn()
+lr = 0.0001
+
+# Gradient descent function
+
+def gradient_descent(w, b, lr, act_fun, epochs=1750):
+
+    for epoch in range(epochs):
+
+        predictions = act_fun(w * study_hrs + b)
+        error = predictions - score
+
+        dw = np.mean(error * study_hrs)
+        db = np.mean(error)
+
+        w = w - lr * dw
+        b = b - lr * db
+
+        if epoch % 200 == 0:
+            cost = np.mean(error ** 2)
+            print(f"Epoch {epoch}: Cost = {cost}")
+
+    print(f"Final values -> w: {w}, b: {b}")
+    return w, b
+
+# Training with different activation functions
+
+w_sigmoid, b_sigmoid = gradient_descent(w, b, lr, sigmoid)
+w_relu, b_relu = gradient_descent(w, b, lr, relu)
+w_tanh, b_tanh = gradient_descent(w, b, lr, tanh)
+
+# Testing with new study hours
+
+New_study_hr = 7
+New_study_hr = (New_study_hr - np.mean(study_hrs)) / np.std(study_hrs)
+
+sigmoid_prediction = sigmoid(w_sigmoid * New_study_hr + b_sigmoid)
+relu_prediction = relu(w_relu * New_study_hr + b_relu)
+tanh_prediction = tanh(w_tanh * New_study_hr + b_tanh)
+
+# Print predictions
+
+print(f"Sigmoid Prediction: {sigmoid_prediction}")
+print(f"ReLU Prediction: {relu_prediction}")
+print(f"Tanh Prediction: {tanh_prediction}")
