@@ -1,0 +1,30 @@
+def step_function(x):
+    return 1 if x >= 0.5 else 0
+
+
+def spam_filter(spam_keywords, suspicious_link, sender_reputation):
+    
+    weight_keywords = 0.4
+    weight_link = 0.4
+    weight_reputation = -0.5  # Negative weight as higher reputation means lower spam probability
+ 
+    bias = 0.2
+    
+    weighted_sum = (spam_keywords * weight_keywords) + \
+                   (suspicious_link * weight_link) + \
+                   (sender_reputation * weight_reputation) + bias
+    
+    return step_function(weighted_sum)
+
+def process_email(email_text, suspicious_link, sender_reputation):
+    spam_words = ["win", "prize", "free", "money", "offer"]
+    spam_keywords = sum(word in email_text.lower() for word in spam_words)
+    
+    result = spam_filter(spam_keywords, suspicious_link, sender_reputation)
+    return "Spam" if result == 1 else "Not Spam"
+
+email_text = input("Enter the email content: ")
+suspicious_link = int(input("Enter 1 if there is a suspicious link, else 0: "))
+sender_reputation = float(input("Enter sender reputation (0 to 1): "))
+
+print(process_email(email_text, suspicious_link, sender_reputation))
