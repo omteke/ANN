@@ -1,0 +1,22 @@
+# Step Activation Function
+def step_function(value, threshold):
+    return "Yes" if value >= threshold else "No"
+
+def recommendation_system(user, weights, bias):
+    weighted_sum = sum(user[i] * weights[i] for i in range(len(user))) + bias
+    return weighted_sum
+
+# Example Users (Age, Income)
+users = [
+    [25, 50000],  # User 1
+    [45, 120000],  # User 2
+    [18, 15000],   # User 3
+]
+
+weights = [0.1, 0.0001]  
+bias = 5  # Bias value
+threshold = 10  
+
+for user in users:
+    weighted_sum = recommendation_system(user, weights, bias)  # Calculate weighted sum for each user
+    print(f"User Data: {user} -> Weighted Sum: {weighted_sum:.2f} -> Recommendation: {step_function(weighted_sum, threshold)}")
