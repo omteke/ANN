@@ -1,0 +1,27 @@
+import numpy as np
+
+# Step Activation Function
+def step_function(value, threshold=0):
+    return 1 if value >= threshold else 0  # 1 = Object Present, 0 = Object Absent
+
+
+def perceptron(inputs, weights, bias):
+    weighted_sum = np.dot(inputs, weights) + bias 
+    return step_function(weighted_sum)  
+
+# Example Dataset (Features: [Edge Density, Color Intensity])
+images = [
+    [0.8, 0.6],  # High edge density & color intensity → Likely contains object
+    [0.3, 0.2],  # Low edge density & color intensity → Likely no object
+    [0.7, 0.5],  # Medium-high values → Likely contains object
+    [0.2, 0.1]   # Very low values → Likely no object
+]
+
+weights = [0.9, 0.7] 
+bias = -0.5  
+threshold = 0  
+
+
+for i, img in enumerate(images):
+    prediction = perceptron(np.array(img), weights, bias)
+    print(f"Image {i+1} Features: {img} -> Prediction: {'Object Present' if prediction == 1 else 'No Object'}")
