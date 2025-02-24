@@ -1,0 +1,52 @@
+import numpy as np
+import re
+
+def activation(x):
+    return 1 if x >= 0 else 0
+
+def count_capital_letters(email):
+    return sum(1 for char in email if char.isupper())
+
+def process_email(email):
+    capital_letters = count_capital_letters(email)
+    email_length = len(email)
+    spam_keywords = ["free", "win", "sale", "offer", "prize"]
+    contains_spam_word = 1 if any(word in email.lower() for word in spam_keywords) else 0
+    return [capital_letters, contains_spam_word, email_length]
+
+# Initialize parameters
+learning_rate = 0.1
+epochs = 10
+num_features = 3
+weights = np.random.rand(num_features) * 0.01  # Small random values
+bias = np.random.rand() * 0.01
+
+# Taking user input for training data
+n = int(input("Enter number of training samples: "))
+X = []
+y = []
+for i in range(n):
+    email = input(f"Enter email content for sample {i+1}: ")
+    label = int(input(f"Enter label (1 for Spam, 0 for Not Spam) for sample {i+1}: "))
+    X.append(process_email(email))
+    y.append(label)
+
+X = np.array(X)
+y = np.array(y)
+
+# Training loop
+for _ in range(epochs):
+    for i in range(len(X)):
+        linear_output = np.dot(X[i], weights) + bias
+        y_pred = activation(linear_output)
+        
+        error = y[i] - y_pred
+        
+        weights += learning_rate * error * X[i]
+        bias += learning_rate * error
+
+# Taking user input for testing email
+email = input("Enter email content for classification: ")
+X_test = np.array([process_email(email)])
+y_pred = activation(np.dot(X_test[0], weights) + bias)
+print("Prediction (1 for Spam, 0 for Not Spam):", y_pred)
