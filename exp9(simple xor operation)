@@ -1,0 +1,53 @@
+import numpy as np
+
+# Sample Data (XOR)
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])  # 4 samples, 2 features each
+Y = np.array([[0], [1], [1], [0]])             # Target outputs for XOR
+
+W = np.random.rand(2, 1)   # Random weights for 2 inputs to 1 output
+b = np.random.rand(1)      # Bias
+lr = 0.1                   # Learning rate
+epochs = 1000              # Number of iterations for training
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))              # Activation function
+
+def sigmoid_derivative(x):
+    return x * (1 - x)                       # Derivative for gradient computation
+
+def mse_loss(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)   # Mean Squared Error loss
+
+def cross_entropy_loss(y_true, y_pred):
+    eps = 1e-15                              # To prevent log(0)
+    y_pred = np.clip(y_pred, eps, 1 - eps)
+    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))  # Binary Cross-Entropy Loss
+
+loss_type = 'cross_entropy'  # Can switch to 'mse'
+
+for epoch in range(epochs):
+    z = np.dot(X, W) + b         # Linear combination of inputs and weights
+    A = sigmoid(z)               # Activation (predicted output)
+
+    if loss_type == 'mse':
+        loss = mse_loss(Y, A)
+        d_loss = (Y - A) * sigmoid_derivative(A)  # Derivative for MSE
+    elif loss_type == 'cross_entropy':
+        loss = cross_entropy_loss(Y, A)
+        d_loss = (A - Y)                          # Simpler derivative for cross-entropy with sigmoid
+
+    dW = np.dot(X.T, d_loss)    # Gradient w.r.t. weights
+    db = np.sum(d_loss)         # Gradient w.r.t. bias
+
+    W -= lr * dW                # Update weights
+    b -= lr * db                # Update bias
+
+    if epoch % 100 == 0:
+        print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+output = sigmoid(np.dot(X, W) + b)
+print("\nFinal Predictions:")
+print(output.round())
+
+print("\nPredicted Probabilities:")
+print(output)
