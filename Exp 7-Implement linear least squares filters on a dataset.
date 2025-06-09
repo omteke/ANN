@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+import sklearn as sk
+!pip install openpyxl
+import openpyxl
+import matplotlib.pyplot as plt
+
+from google.colab import files
+uploaded = files.upload()
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+!ls /content/drive/MyDrive
+
+!ls /content/drive/MyDrive/Colab\ Notebooks/Student_dataset.xlsx
+
+filepath = '/content/drive/MyDrive/Colab Notebooks/Student_dataset.xlsx'
+
+df = pd.read_excel(filepath)
+
+df.describe()
+
+df = pd.DataFrame(df)
+Data = df [['12th Score','IQ']]
+
+w = 0
+b = 0
+epoch = 100
+lr = 0.01
+
+x = Data[['12th Score']].values
+x = np.c_[np.ones(x.shape[0]), x]
+y = Data['IQ'].values.reshape(-1, 1)
+w = np.linalg.inv(x.T @ x) @ x.T @ y
+y_predict = x @ w
+e = y - y_predict
+
+print("\nPredicted IQ values:\n", y_predict)
+print("\nError (Residuals):\n", e)
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(df['12th Score'], df['IQ'], color='blue', label="Actual Data")
+
+
+plt.plot(df['12th Score'], y_predict, color='green', linewidth=2, label="Regression Line")
+
+
+for i in range(len(df)):
+    plt.plot([df['12th Score'][i], df['12th Score'][i]], [y[i], y_predict[i]], 'g--')
+
+
+plt.xlabel("12th Score")
+plt.ylabel("IQ")
+plt.title("Linear Regression: IQ vs. 12th Score")
+plt.legend()
+plt.grid()
+plt.show()
